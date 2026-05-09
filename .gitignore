@@ -1,6 +1,8 @@
 /node_modules/
 /public/build/
+.env
 .firebaserc
 firebase.json
+/data
 
 .DS_Store

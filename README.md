@@ -130,9 +130,14 @@
 
 <!-- INSTALLATION -->
 ## Design choices
-- The master key for the end-to-end encryption of the messages is: `rG.k4FALy-TB_gF`
+- Messages use a shared secret loaded from the local `.env` file through `CHAT_SHARED_SECRET`
 - All the users are connected to the same chat
 - Languages used: `Javascript`, `HTML`, `CSS`, `Svelte` (a simple way to make html and javascript communicate with each other)
+
+## Security considerations
+- The current chat encryption model is suitable only for local demos or controlled development environments
+- A shared secret injected into a client bundle is not production-safe, because every client can still recover it
+- A production design should use per-user or per-conversation keys exchanged securely instead of a global shared secret
   
 <p align="right">(<a href="#readme-top">Back on top</a>)</p>
 
@@ -142,6 +147,7 @@ If you want to try the local version of the project, you just need to open a `Po
 
 ```
 git clone https://github.com/Rigor64/gun-chat
+set-content .env "CHAT_SHARED_SECRET=choose-a-local-demo-secret"
 npm install
 npm run dev
 ```

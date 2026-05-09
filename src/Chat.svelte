@@ -7,6 +7,7 @@
 
   import GUN from 'gun';
   const db = GUN();
+  const chatSharedSecret = process.env.CHAT_SHARED_SECRET;
 
   let newMessage;
   let messages = [];
@@ -43,13 +44,10 @@
       .map(match)
       .once(async (data, id) => {
         if (data) {
-          // Key for end-to-end encryption
-          const key = '#rG.k4FALy-TB_gF';
-
           var message = {
             // transform the data
             who: await db.user(data).get('alias'), // a user might lie who they are! So let the user system detect whose data it is.
-            what: (await SEA.decrypt(data.what, key)) + '', // force decrypt as text.
+            what: (await SEA.decrypt(data.what, chatSharedSecret)) + '', // force decrypt as text.
             when: GUN.state.is(data, 'what'), // get the internal timestamp for the what property.
           };
 
@@ -66,7 +64,7 @@
   });
 
   async function sendMessage() {
-    const secret = await SEA.encrypt(newMessage, '#rG.k4FALy-TB_gF');
+    const secret = await SEA.encrypt(newMessage, chatSharedSecret);
     const message = user.get('all').set({ what: secret });
     const index = new Date().toISOString();
     db.get('chat').get(index).put(message);
